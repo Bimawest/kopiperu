@@ -1097,275 +1097,207 @@
     </footer>
 
     <script>
-        //script class isi
-        document.addEventListener('DOMContentLoaded', function () {
-            const aboutContent = document.querySelector('.about-content');
-            const historyContent = document.querySelector('.history-content');
-            const aboutHeading = aboutContent.querySelector('h2');
-            const historyHeading = historyContent.querySelector('h2');
-            const aboutParagraph = aboutContent.querySelector('p');
-            const historyParagraph = historyContent.querySelector('p');
+    document.addEventListener("DOMContentLoaded", () => {
+        const addToCartButtons = document.querySelectorAll(".cart");
+        const cartBadge = document.getElementById("cart-badge");
+        const CART_KEY_3 = 'cartItems3'; // PERUBAHAN UNTUK KERANJANG 3 - Definisikan kunci keranjang 3
 
-            // Sembunyikan paragraf saat halaman dimuat
-            aboutParagraph.style.display = 'none';
-            historyParagraph.style.display = 'none';
+        // Fungsi untuk memperbarui badge keranjang
+        function updateCartBadge() {
+            const cartItems = JSON.parse(localStorage.getItem(CART_KEY_3)) || []; // PERUBAHAN UNTUK KERANJANG 3 - Gunakan kunci keranjang 3
+            cartBadge.textContent = cartItems.length; // Update jumlah item di badge
 
-            // Tambahkan event listener untuk heading "Tentang kami"
-            aboutHeading.addEventListener('click', function () {
-                if (aboutParagraph.style.display === 'none' || aboutParagraph.style.display === '') {
-                    aboutParagraph.style.display = 'block';
-                } else {
-                    aboutParagraph.style.display = 'none';
-                }
-            });
-
-            // Tambahkan event listener untuk heading "Sejarah"
-            historyHeading.addEventListener('click', function () {
-                if (historyParagraph.style.display === 'none' || historyParagraph.style.display === '') {
-                    historyParagraph.style.display = 'block';
-                } else {
-                    historyParagraph.style.display = 'none';
-                }
-            });
-        });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Seleksi semua tombol menu dan item minum
-            const menuButtons = document.querySelectorAll('.menu');
-            const minumGrids = document.querySelectorAll('.minum-item-grid');
-
-            // Sembunyikan semua item minum saat halaman dimuat, kecuali untuk ESSPRESO BASE
-            minumGrids.forEach((grid, index) => {
-                grid.style.display = index === 0 ? 'grid' : 'none'; // Tampilkan grid pertama (ESSPRESO BASE)
-            });
-
-            // Tambahkan event listener untuk setiap tombol menu
-            menuButtons.forEach((button, index) => {
-                button.addEventListener('click', function () {
-                    // Toggle tampilan grid yang sesuai dengan tombol yang diklik
-                    if (minumGrids[index].style.display === 'grid') {
-                        minumGrids[index].style.display = 'none'; // Sembunyikan jika sudah ditampilkan
-                    } else {
-                        // Sembunyikan semua grid lainnya
-                        minumGrids.forEach(grid => {
-                            grid.style.display = 'none';
-                        });
-                        // Tampilkan grid yang sesuai
-                        minumGrids[index].style.display = 'grid';
-                    }
-                });
-            });
-        });
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const addToCartButtons = document.querySelectorAll(".cart");
-            const cartBadge = document.getElementById("cart-badge");
-
-            // Fungsi untuk memperbarui badge keranjang
-            function updateCartBadge() {
-                const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-                cartBadge.textContent = cartItems.length; // Update jumlah item di badge
-
-                // Sembunyikan badge jika jumlah item adalah 0
-                if (cartItems.length === 0) {
-                    cartBadge.style.display = "none";
-                } else {
-                    cartBadge.style.display = "block";
-                }
+            // Sembunyikan badge jika jumlah item adalah 0
+            if (cartItems.length === 0) {
+                cartBadge.style.display = "none";
+            } else {
+                cartBadge.style.display = "block";
             }
+        }
 
-            // Update badge saat halaman dimuat
-            updateCartBadge();
+        // Update badge saat halaman dimuat
+        updateCartBadge();
 
-            // Add event listener to all "+" buttons
-            addToCartButtons.forEach((button) => {
-                button.addEventListener("click", () => {
-                    const productItem = button.closest(".description");
-                    const imgSrc = button.getAttribute("data-img"); // Get the image source
-                    const itemName = button.getAttribute("data-name"); // Get the item name
-                    const quantity = parseInt(productItem.querySelector(".quantity").value); // Get the quantity
-                    const price = parseInt(productItem.querySelector(".price").textContent.replace("Rp", "").replace(".", "")); // Get the price
+        // Add event listener to all "+" buttons
+        addToCartButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const productItem = button.closest(".product-item");
+                const imgSrc = button.getAttribute("data-img"); // Get the image source
+                const itemName = button.getAttribute("data-name"); // Get the item name
+                const quantity = parseInt(productItem.querySelector(".quantity").value); // Get the quantity
+                const price = parseInt(productItem.querySelector(".price").textContent.replace("Rp", "").replace(".", "")); // Get the price
 
-                    // Validate quantity
-                    if (isNaN(quantity) || quantity <= 0) {
-                        alert("Jumlah barang harus lebih dari 0!");
-                        return;
-                    }
-
-                    // Create a cart item object
-                    const cartItem = {
-                        imgSrc: imgSrc,
-                        itemName: itemName,
-                        quantity: quantity,
-                        price: price, // Add price to the cart item
-                    };
-
-                    // Retrieve existing cart items from localStorage
-                    let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-
-                    // Add the new item to the cart
-                    cartItems.push(cartItem);
-
-                    // Save the updated cart back to localStorage
-                    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-
-                    // Update the cart badge
-                    updateCartBadge();
-
-                    // Animate the image to the cart
-                    animateImageToCart(imgSrc);
-                });
-            });
-
-            // Function to animate the image to the cart
-            function animateImageToCart(imgSrc) {
-                const img = document.createElement("img");
-                img.src = imgSrc;
-                img.style.position = "fixed";
-                img.style.width = "50px";
-                img.style.height = "50px";
-                img.style.borderRadius = "50%";
-                img.style.transition = "all 1s ease";
-                document.body.appendChild(img);
-
-                const cartIcon = document.querySelector(".fa-shopping-cart");
-                const cartIconRect = cartIcon.getBoundingClientRect();
-
-                const imgRect = img.getBoundingClientRect();
-                const startX = imgRect.left;
-                const startY = imgRect.top;
-                const endX = cartIconRect.left + cartIconRect.width / 2 - imgRect.width / 2;
-                const endY = cartIconRect.top + cartIconRect.height / 2 - imgRect.height / 2;
-
-                img.style.left = `${startX}px`;
-                img.style.top = `${startY}px`;
-
-                setTimeout(() => {
-                    img.style.left = `${endX}px`;
-                    img.style.top = `${endY}px`;
-                    img.style.opacity = "1";
-                }, 10);
-
-                setTimeout(() => {
-                    img.remove();
-                }, 1010);
-            }
-        });
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            // Mendapatkan semua tombol "Detail"
-            const detailButtons = document.querySelectorAll(".add-to-cart");
-
-            // Mendapatkan semua elemen deskripsi
-            const descriptions = document.querySelectorAll(".description");
-
-            // Menambahkan event listener ke setiap tombol "Detail"
-            detailButtons.forEach((button, index) => {
-                button.addEventListener("click", () => {
-                    // Menampilkan deskripsi yang sesuai
-                    descriptions[index].style.display = "block";
-                });
-            });
-
-            // Menambahkan event listener ke setiap tombol "OK" pada deskripsi
-            const okButtons = document.querySelectorAll(".btndes");
-            okButtons.forEach((button, index) => {
-                button.addEventListener("click", () => {
-                    // Menutup deskripsi yang sesuai
-                    descriptions[index].style.display = "none";
-                });
-            });
-        });
-    </script>
-
-    <!--script diseble masukkan keranjang-->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const minusButtons = document.querySelectorAll(".minus");
-            const plusButtons = document.querySelectorAll(".plus");
-            const cartButtons = document.querySelectorAll(".cart");
-
-            // Fungsi untuk memeriksa dan mengatur status tombol keranjang
-            function updateCartButtonState(input, cartButton) {
-                if (parseInt(input.value) === 0) {
-                    cartButton.disabled = true; // Nonaktifkan tombol jika nilai input adalah 0
-                } else {
-                    cartButton.disabled = false; // Aktifkan tombol jika nilai input lebih dari 0
+                // Validate quantity
+                if (isNaN(quantity) || quantity <= 0) {
+                    alert("Jumlah barang harus lebih dari 0!");
+                    return;
                 }
+
+                // Create a cart item object
+                const cartItem = {
+                    imgSrc: imgSrc,
+                    itemName: itemName,
+                    quantity: quantity,
+                    price: price, // Add price to the cart item
+                };
+
+                // Retrieve existing cart items from localStorage
+                let cartItems = JSON.parse(localStorage.getItem(CART_KEY_3)) || []; // PERUBAHAN UNTUK KERANJANG 3 - Gunakan kunci keranjang 3
+
+                // Add the new item to the cart
+                cartItems.push(cartItem);
+
+                // Save the updated cart back to localStorage
+                localStorage.setItem(CART_KEY_3, JSON.stringify(cartItems)); // PERUBAHAN UNTUK KERANJANG 3 - Gunakan kunci keranjang 3
+
+                // Update the cart badge
+                updateCartBadge();
+
+                // Animate the image to the cart
+                animateImageToCart(imgSrc);
+            });
+        });
+
+        // Function to animate the image to the cart
+        function animateImageToCart(imgSrc) {
+            const img = document.createElement("img");
+            img.src = imgSrc;
+            img.style.position = "fixed";
+            img.style.width = "50px";
+            img.style.height = "50px";
+            img.style.borderRadius = "50%";
+            img.style.transition = "all 1s ease";
+            document.body.appendChild(img);
+
+            const cartIcon = document.querySelector(".fa-shopping-cart");
+            const cartIconRect = cartIcon.getBoundingClientRect();
+
+            const imgRect = img.getBoundingClientRect();
+            const startX = imgRect.left;
+            const startY = imgRect.top;
+            const endX = cartIconRect.left + cartIconRect.width / 2 - imgRect.width / 2;
+            const endY = cartIconRect.top + cartIconRect.height / 2 - imgRect.height / 2;
+
+            img.style.left = `${startX}px`;
+            img.style.top = `${startY}px`;
+
+            setTimeout(() => {
+                img.style.left = `${endX}px`;
+                img.style.top = `${endY}px`;
+                img.style.opacity = "1";
+            }, 10);
+
+            setTimeout(() => {
+                img.remove();
+            }, 1010);
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Mendapatkan semua tombol "Detail"
+        const detailButtons = document.querySelectorAll(".add-to-cart");
+
+        // Mendapatkan semua elemen deskripsi
+        const descriptions = document.querySelectorAll(".description");
+
+        // Menambahkan event listener ke setiap tombol "Detail"
+        detailButtons.forEach((button, index) => {
+            button.addEventListener("click", () => {
+                // Menampilkan deskripsi yang sesuai
+                descriptions[index].style.display = "block";
+            });
+        });
+
+        // Menambahkan event listener ke setiap tombol "OK" pada deskripsi
+        const okButtons = document.querySelectorAll(".btndes");
+        okButtons.forEach((button, index) => {
+            button.addEventListener("click", () => {
+                // Menutup deskripsi yang sesuai
+                descriptions[index].style.display = "none";
+            });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const minusButtons = document.querySelectorAll(".minus");
+        const plusButtons = document.querySelectorAll(".plus");
+        const cartButtons = document.querySelectorAll(".cart");
+
+        // Fungsi untuk memeriksa dan mengatur status tombol keranjang
+        function updateCartButtonState(input, cartButton) {
+            if (parseInt(input.value) === 0) {
+                cartButton.disabled = true; // Nonaktifkan tombol jika nilai input adalah 0
+            } else {
+                cartButton.disabled = false; // Aktifkan tombol jika nilai input lebih dari 0
             }
+        }
 
-            // Fungsi untuk tombol minus
-            minusButtons.forEach((button) => {
-                button.addEventListener("click", () => {
-                    const input = button.nextElementSibling; // Ambil input yang bersebelahan
-                    let value = parseInt(input.value); // Ambil nilai input dan ubah ke integer
-                    if (value > 0) { // Pastikan nilai tidak kurang dari 1
-                        input.value = value - 1; // Kurangi nilai
-                    } else {
-                        input.value = 0; // Set nilai ke 0 jika kurang dari 1
-                    }
-                    // Perbarui status tombol keranjang
-                    const cartButton = button.parentElement.querySelector(".cart");
-                    updateCartButtonState(input, cartButton);
-                });
-            });
-
-            // Fungsi untuk tombol plus
-            plusButtons.forEach((button) => {
-                button.addEventListener("click", () => {
-                    const input = button.previousElementSibling; // Ambil input yang bersebelahan
-                    let value = parseInt(input.value); // Ambil nilai input dan ubah ke integer
-                    input.value = value + 1; // Tambahkan nilai
-                    // Perbarui status tombol keranjang
-                    const cartButton = button.parentElement.querySelector(".cart");
-                    updateCartButtonState(input, cartButton);
-                });
-            });
-
-            // Inisialisasi status tombol keranjang saat halaman dimuat
-            cartButtons.forEach((cartButton) => {
-                const input = cartButton.parentElement.querySelector(".quantity");
+        // Fungsi untuk tombol minus
+        minusButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const input = button.nextElementSibling; // Ambil input yang bersebelahan
+                let value = parseInt(input.value); // Ambil nilai input dan ubah ke integer
+                if (value > 0) { // Pastikan nilai tidak kurang dari 1
+                    input.value = value - 1; // Kurangi nilai
+                } else {
+                    input.value = 0; // Set nilai ke 0 jika kurang dari 1
+                }
+                // Perbarui status tombol keranjang
+                const cartButton = button.parentElement.querySelector(".cart");
                 updateCartButtonState(input, cartButton);
             });
         });
-    </script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const images = document.querySelectorAll("#imgs img"); // Select all images in the container
-            const prevButton = document.getElementById("pre");
-            const nextButton = document.getElementById("next");
-            let currentIndex = 0; // Start with the first image
-
-            // Function to update the displayed image
-            function updateImage() {
-                images.forEach((img, index) => {
-                    img.style.display = index === currentIndex ? "block" : "none"; // Show the current image, hide others
-                });
-            }
-
-            // Event listener for the previous button
-            prevButton.addEventListener("click", () => {
-                currentIndex = (currentIndex > 0) ? currentIndex - 1 : images.length - 1; // Go to the previous image or loop to the last
-                updateImage();
+        // Fungsi untuk tombol plus
+        plusButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const input = button.previousElementSibling; // Ambil input yang bersebelahan
+                let value = parseInt(input.value); // Ambil nilai input dan ubah ke integer
+                input.value = value + 1; // Tambahkan nilai
+                // Perbarui status tombol keranjang
+                const cartButton = button.parentElement.querySelector(".cart");
+                updateCartButtonState(input, cartButton);
             });
-
-            // Event listener for the next button
-            nextButton.addEventListener("click", () => {
-                currentIndex = (currentIndex < images.length - 1) ? currentIndex + 1 : 0; // Go to the next image or loop to the first
-                updateImage();
-            });
-
-            // Initialize the first image display
-            updateImage();
         });
-    </script>
+
+        // Inisialisasi status tombol keranjang saat halaman dimuat
+        cartButtons.forEach((cartButton) => {
+            const input = cartButton.parentElement.querySelector(".quantity");
+            updateCartButtonState(input, cartButton);
+        });
+    });
+</script>
+
+<script>
+    // Ambil data menu dari localStorage
+    const menuItems = JSON.parse(localStorage.getItem('menuItems3')) || []; // PERUBAHAN UNTUK KERANJANG 3 - Kunci menu spesifik
+
+    // Fungsi untuk menampilkan menu
+    function displayMenu() {
+        const menuList = document.getElementById('menuList');
+        menuList.innerHTML = '';
+
+        menuItems.forEach(item => {
+            const menuItem = document.createElement('div');
+            menuItem.className = 'p-4 border border-gray-300 rounded-lg';
+            menuItem.innerHTML = `
+            <h2 class="text-xl font-semibold">ID: ${item.id}</h2>
+            <h2 class="text-xl font-semibold">${item.name}</h2>
+            <p class="text-gray-600">Harga: Rp${item.price}</p>
+            <p class="text-gray-600">Stok: ${item.stock}</p>
+            <img src="${item.image}" alt="${item.name}" class="mt-2 w-32 h-32 object-cover rounded-lg">
+        `;
+            menuList.appendChild(menuItem);
+        });
+    }
+
+    // Panggil fungsi displayMenu saat halaman dimuat
+    displayMenu();
+</script>
 
 
 </body>
