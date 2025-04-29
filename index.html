@@ -230,8 +230,8 @@
         position: relative;
         display: flex;
         justify-self: center;
-        width: 50%;
-        height: 50%;
+        width: 700px;
+        height: 500px;
         margin: 0;
         border-radius: 10px;
         border: 2px solid black;
@@ -239,7 +239,7 @@
     }
 
     .slideshow img {
-        width: 400px;
+        width: 700px;
         height: 500px;
         object-fit: cover;
     }
@@ -532,6 +532,26 @@
         margin: 1rem;
         color: #000;
         padding-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .slideshow {
+        position: relative;
+        display: flex;
+        justify-self: center;
+        width: 50%;
+        height: 50%;
+        margin: 0;
+        border-radius: 10px;
+        border: 2px solid black;
+        overflow: hidden;
+    }
+
+    .slideshow img {
+        width: 400px;
+        height: 500px;
+        object-fit: cover;
+    }
     }
 </style>
 
