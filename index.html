@@ -1097,14 +1097,78 @@
     </footer>
 
     <script>
+    //script class isi
+    document.addEventListener('DOMContentLoaded', function () {
+        const aboutContent = document.querySelector('.about-content');
+        const historyContent = document.querySelector('.history-content');
+        const aboutHeading = aboutContent.querySelector('h2');
+        const historyHeading = historyContent.querySelector('h2');
+        const aboutParagraph = aboutContent.querySelector('p');
+        const historyParagraph = historyContent.querySelector('p');
+
+        // Sembunyikan paragraf saat halaman dimuat
+        aboutParagraph.style.display = 'none';
+        historyParagraph.style.display = 'none';
+
+        // Tambahkan event listener untuk heading "Tentang kami"
+        aboutHeading.addEventListener('click', function () {
+            if (aboutParagraph.style.display === 'none' || aboutParagraph.style.display === '') {
+                aboutParagraph.style.display = 'block';
+            } else {
+                aboutParagraph.style.display = 'none';
+            }
+        });
+
+        // Tambahkan event listener untuk heading "Sejarah"
+        historyHeading.addEventListener('click', function () {
+            if (historyParagraph.style.display === 'none' || historyParagraph.style.display === '') {
+                historyParagraph.style.display = 'block';
+            } else {
+                historyParagraph.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Seleksi semua tombol menu dan item minum
+        const menuButtons = document.querySelectorAll('.menu');
+        const minumGrids = document.querySelectorAll('.minum-item-grid');
+
+        // Sembunyikan semua item minum saat halaman dimuat, kecuali untuk ESSPRESO BASE
+        minumGrids.forEach((grid, index) => {
+            grid.style.display = index === 0 ? 'grid' : 'none'; // Tampilkan grid pertama (ESSPRESO BASE)
+        });
+
+        // Tambahkan event listener untuk setiap tombol menu
+        menuButtons.forEach((button, index) => {
+            button.addEventListener('click', function () {
+                // Toggle tampilan grid yang sesuai dengan tombol yang diklik
+                if (minumGrids[index].style.display === 'grid') {
+                    minumGrids[index].style.display = 'none'; // Sembunyikan jika sudah ditampilkan
+                } else {
+                    // Sembunyikan semua grid lainnya
+                    minumGrids.forEach(grid => {
+                        grid.style.display = 'none';
+                    });
+                    // Tampilkan grid yang sesuai
+                    minumGrids[index].style.display = 'grid';
+                }
+            });
+        });
+    });
+</script>
+
+<script>
     document.addEventListener("DOMContentLoaded", () => {
         const addToCartButtons = document.querySelectorAll(".cart");
         const cartBadge = document.getElementById("cart-badge");
-        const CART_KEY_3 = 'cartItems3'; // PERUBAHAN UNTUK KERANJANG 3 - Definisikan kunci keranjang 3
+        const CART_KEY_2 = 'cartItems2'; // PERUBAHAN UNTUK KERANJANG 2 - Definisikan kunci keranjang 2
 
         // Fungsi untuk memperbarui badge keranjang
         function updateCartBadge() {
-            const cartItems = JSON.parse(localStorage.getItem(CART_KEY_3)) || []; // PERUBAHAN UNTUK KERANJANG 3 - Gunakan kunci keranjang 3
+            const cartItems = JSON.parse(localStorage.getItem(CART_KEY_2)) || []; // PERUBAHAN UNTUK KERANJANG 2 - Gunakan kunci keranjang 2
             cartBadge.textContent = cartItems.length; // Update jumlah item di badge
 
             // Sembunyikan badge jika jumlah item adalah 0
@@ -1121,7 +1185,7 @@
         // Add event listener to all "+" buttons
         addToCartButtons.forEach((button) => {
             button.addEventListener("click", () => {
-                const productItem = button.closest(".product-item");
+                const productItem = button.closest(".description");
                 const imgSrc = button.getAttribute("data-img"); // Get the image source
                 const itemName = button.getAttribute("data-name"); // Get the item name
                 const quantity = parseInt(productItem.querySelector(".quantity").value); // Get the quantity
@@ -1142,13 +1206,13 @@
                 };
 
                 // Retrieve existing cart items from localStorage
-                let cartItems = JSON.parse(localStorage.getItem(CART_KEY_3)) || []; // PERUBAHAN UNTUK KERANJANG 3 - Gunakan kunci keranjang 3
+                let cartItems = JSON.parse(localStorage.getItem(CART_KEY_2)) || []; // PERUBAHAN UNTUK KERANJANG 2 - Gunakan kunci keranjang 2
 
                 // Add the new item to the cart
                 cartItems.push(cartItem);
 
                 // Save the updated cart back to localStorage
-                localStorage.setItem(CART_KEY_3, JSON.stringify(cartItems)); // PERUBAHAN UNTUK KERANJANG 3 - Gunakan kunci keranjang 3
+                localStorage.setItem(CART_KEY_2, JSON.stringify(cartItems)); // PERUBAHAN UNTUK KERANJANG 2 - Gunakan kunci keranjang 2
 
                 // Update the cart badge
                 updateCartBadge();
@@ -1273,8 +1337,39 @@
 </script>
 
 <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const images = document.querySelectorAll("#imgs img"); // Select all images in the container
+        const prevButton = document.getElementById("pre");
+        const nextButton = document.getElementById("next");
+        let currentIndex = 0; // Start with the first image
+
+        // Function to update the displayed image
+        function updateImage() {
+            images.forEach((img, index) => {
+                img.style.display = index === currentIndex ? "block" : "none"; // Show the current image, hide others
+            });
+        }
+
+        // Event listener for the previous button
+        prevButton.addEventListener("click", () => {
+            currentIndex = (currentIndex > 0) ? currentIndex - 1 : images.length - 1; // Go to the previous image or loop to the last
+            updateImage();
+        });
+
+        // Event listener for the next button
+        nextButton.addEventListener("click", () => {
+            currentIndex = (currentIndex < images.length - 1) ? currentIndex + 1 : 0; // Go to the next image or loop to the first
+            updateImage();
+        });
+
+        // Initialize the first image display
+        updateImage();
+    });
+</script>
+
+<script>
     // Ambil data menu dari localStorage
-    const menuItems = JSON.parse(localStorage.getItem('menuItems3')) || []; // PERUBAHAN UNTUK KERANJANG 3 - Kunci menu spesifik
+    const menuItems = JSON.parse(localStorage.getItem('menuItems2')) || []; // PERUBAHAN UNTUK KERANJANG 2 - Kunci menu spesifik
 
     // Fungsi untuk menampilkan menu
     function displayMenu() {
